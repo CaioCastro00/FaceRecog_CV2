@@ -1,8 +1,14 @@
 import threading
+import pathlib
 import cv2
 from deepface import DeepFace
 
+"""
+cascade_path = pathlib.Path(cv2.__file__).parent.absolute() / "data/haarcascade_frontalface_default.xml"
+clf  = cv2.CascadeClassifier(str(cascade_path))
+"""
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+#cap = cv2.VideoCapture("video_reference")
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -26,6 +32,20 @@ def check_face(frame):
 
 while True:
     ret, frame = cap.read()
+
+    """
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = clf.detectMultiScale(
+        gray,
+        scaleFactor = 1.2,
+        minNeighbors = 5,
+        minSize = (30,30),
+        flags = cv2.CASCADE_SCALE_IMAGE
+    )
+
+    for (x, y, width, height) in faces:
+        cv2.rectangle(frame, (x,y), (x+width, y+height), (255, 255, 0), 2)
+    """
 
     if ret:
         if counter % 30 == 0:
