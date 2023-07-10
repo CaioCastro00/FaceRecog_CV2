@@ -7,7 +7,7 @@ from deepface import DeepFace
 cascade_path = pathlib.Path(cv2.__file__).parent.absolute() / "data/haarcascade_frontalface_default.xml"
 clf  = cv2.CascadeClassifier(str(cascade_path))
 """
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0, cv2.CAP_ANY)
 #cap = cv2.VideoCapture("video_reference")
 
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -16,7 +16,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 counter = 0
 face_match = False
 
-reference_img =cv2.imread("Reference/reference.jpg")
+reference_img =cv2.imread("FaceRecog_CV2\\Reference\\20200822_104745.jpg")
 
 def check_face(frame):
     global face_match
@@ -26,12 +26,16 @@ def check_face(frame):
             face_match = True
         else:
             face_match = False
-    except ValueError:
+    except Exception as e:
+        print(f"An error occurred during face verification: {str(e)}")
         face_match = False
 
 
 while True:
     ret, frame = cap.read()
+
+    if frame is None:
+        continue
 
     """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
