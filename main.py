@@ -31,43 +31,51 @@ def check_face(frame):
         face_match = False
 
 
-while True:
-    ret, frame = cap.read()
 
-    if frame is None:
-        continue
+def capture_frames():
+    global counter
 
-    """
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = clf.detectMultiScale(
-        gray,
-        scaleFactor = 1.2,
-        minNeighbors = 5,
-        minSize = (30,30),
-        flags = cv2.CASCADE_SCALE_IMAGE
-    )
+    while True:
+        ret, frame = cap.read()
 
-    for (x, y, width, height) in faces:
-        cv2.rectangle(frame, (x,y), (x+width, y+height), (255, 255, 0), 2)
-    """
+        if frame is None:
+            continue
 
-    if ret:
-        if counter % 30 == 0:
-            try:
-                threading.Thread(target=check_face, args=(frame.copy())).start()
-            except ValueError:
-                pass
-    counter += 1
+        """
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = clf.detectMultiScale(
+            gray,
+            scaleFactor = 1.2,
+            minNeighbors = 5,
+            minSize = (30,30),
+            flags = cv2.CASCADE_SCALE_IMAGE
+        )
 
-    if face_match:
-        cv2.putText(frame, "MATCH!", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
-    else:
-        cv2.putText(frame, "NO MATCH!", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+        for (x, y, width, height) in faces:
+            cv2.rectangle(frame, (x,y), (x+width, y+height), (255, 255, 0), 2)
+        """
 
-    cv2.imshow("video", frame)
+        if ret:
+            if counter % 30 == 0:
+                try:
+                    threading.Thread(target=check_face, args=(frame.copy())).start()
+                except ValueError:
+                    pass
+        counter += 1
 
-    key = cv2.waitKey(1)
-    if key == ord('q'):
-        break
+        if face_match:
+            cv2.putText(frame, "MATCH!", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
+        else:
+            cv2.putText(frame, "NO MATCH!", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
 
-cv2.destroyAllWindows()
+        cv2.imshow("video", frame)
+
+        key = cv2.waitKey(1)
+        if key == ord('q'):
+            break
+
+    cv2.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    threading.Thread(target=capture_frames).start()
